@@ -450,11 +450,8 @@ const site = {
     {nome: "Mariana Martins", tempo: "3 semanas atrás", texto: "O Studio é lindo! Aconchegante, climatizado e lindo! O atendimento é super personalizado e Beatris além de uma grande artista é uma boneca!!! Super indico!!!"},
     {nome: "Everton Ribeiro", tempo: "3 semanas atrás", texto: "Profissional excelente muito top"},
   ],
-  investimentos: ["Até R$ 300", "De R$ 300 a R$ 600", "De R$ 600 a R$ 1.000", "De R$ 1.000 a R$ 1.500", "Acima de R$ 1.500"],
-  locais: ["Braço", "Antebraço", "Perna", "Costas", "Peito", "Barriga", "Outros"],
   estilosForm: ["Realismo", "Fine line", "Florais e botânicas", "Arte ornamental", "Outros"],
   quando: ["De imediato", "Em até 15 dias", "Em até 30 dias", "Só pesquisando"],
-  tamanhos: ["Abaixo de 5 cm", "De 5 a 10 cm", "De 10 a 15 cm", "De 15 a 20 cm", "Acima de 20 cm"],
 };
 
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -602,7 +599,7 @@ $("marquee").innerHTML = words.map((w) => `<span>${w} <b>•</b></span>`).join("
   const fill = (id, opts) => { $(id).innerHTML = '<option value="" disabled selected hidden></option>' + opts.map((o) => `<option>${o}</option>`).join(""); };
   fill("estilo", site.estilosForm); fill("quando", site.quando);
   const form = $("quote-form"), err = $("form-error"), btn = $("submit-btn"), label = $("submit-label");
-  /* celular: DDD + 9 + 8 dígitos, ex.: 61996511893 */
+  /* celular: DDD + 9 + 8 dígitos, ex.: 22998969634 */
   function soDigitos(v) {
     let d = String(v || "").replace(/\D/g, "");
     if (d.length > 11 && d.startsWith("55")) d = d.slice(2);
