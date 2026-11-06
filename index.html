@@ -260,6 +260,23 @@ footer { border-top: 1px solid var(--border); }
 <meta property="og:locale" content="pt_BR">
 <meta property="og:image" content="assets/banner-v2.webp">
 <link rel="apple-touch-icon" href="apple-touch-icon-ana.png">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1856549798673953');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1856549798673953&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -348,7 +365,8 @@ footer { border-top: 1px solid var(--border); }
     <div class="wrap section">
       <div class="form-wrap">
         <h2 class="h2">Faça seu orçamento</h2>
-        <p class="lead" style="max-width:none">Preencha rapidinho e continue a conversa pelo WhatsApp com tudo já organizado.</p>
+        <p class="lead" style="max-width:32rem">Uma sessão com a Ana Beatris custa em média de <strong>R$ 1.000 a R$ 1.500</strong>. Para trabalhos menores, o valor mínimo é de <strong>R$ 500</strong>.</p>
+        <p class="lead" style="max-width:none;margin-top:.5rem">Solicite seu orçamento se cadastrando abaixo.</p>
         <form id="quote-form" novalidate>
           <input type="text" name="website" id="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div>
@@ -707,6 +725,8 @@ $("marquee").innerHTML = words.map((w) => `<span>${w} <b>•</b></span>`).join("
     enviando = true; btn.disabled = true; label.textContent = "Enviando…";
     log("Formulário válido. Dados: " + JSON.stringify(dados));
     try { await enviarWebhook(dados); } catch (e) { log("ERRO no envio: " + (e && e.message)); }
+    /* Meta Pixel: conta o envio do formulário como Lead */
+    try { if (window.fbq) { fbq("track", "Lead", { content_name: "Orçamento WhatsApp", content_category: v("estilo") }); log("Pixel: Lead enviado"); await espera(300); } } catch (e) {}
     if (modoTeste) {
       log("Redirecionaria para: " + urlWhatsApp.slice(0, 80) + "…");
       const a = document.createElement("a"); a.href = urlWhatsApp; a.textContent = "Continuar para o WhatsApp"; a.className = "link-accent";
