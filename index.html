@@ -418,7 +418,7 @@ const site = {
   whatsappBase: "https://wa.me/5522998969634",
   /* Make (Integromat): recebe cada campo do formulário separado */
   webhook: "https://hook.eu2.make.com/3ggubjg62gdswi4qep2dgxlqycg64c8z",
-  mensagemWhatsApp: "Olá, Ana, acabei de preencher o formulário e quero fazer meu orçamento.",
+  mensagemWhatsApp: "Olá, Ana! Vim pelo site do estúdio e quero fazer a minha tatuagem.",
   marquee: ["HISTÓRIAS", "SENTIMENTOS", "MEMÓRIAS", "ESSÊNCIA", "SIGNIFICADO", "EXCLUSIVIDADE", "AUTENTICIDADE"],
   estilos: [
     { titulo: "Tatuagem floral no ombro", texto: "Tatuagem de lírios em fine line no ombro e na clavícula. Flores em traço fino que acompanham as curvas do corpo com delicadeza.", form: "Florais e botânicas", imagem: "assets/portfolio-v2-13.webp", alt: "Tatuagem floral de lírios em fine line no ombro e clavícula" },
@@ -752,11 +752,8 @@ $("marquee").innerHTML = words.map((w) => `<span>${w} <b>•</b></span>`).join("
       site.mensagemWhatsApp,
       "",
       `*Nome:* ${dados.nome}`,
-      `*WhatsApp:* ${dados.whatsapp}`,
       `*Estilo:* ${dados.estilo}`,
-      `*Quando quer tatuar:* ${dados.quando_tatuar}`,
-      `*Data e hora:* ${dados.data_envio}`,
-      `*Dispositivo:* ${disp.tipo} · ${disp.sistema} · ${disp.navegador}`,
+      `*Quando quero tatuar:* ${dados.quando_tatuar}`,
     ].join("\n");
     const urlWhatsApp = `${site.whatsappBase}?text=${encodeURIComponent(linhas)}`;
     enviando = true; btn.disabled = true; label.textContent = "Enviando…";
