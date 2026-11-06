@@ -33,8 +33,8 @@ Ficam direto no HTML: textos do banner e do "Quem sou", os links do Instagram e 
 
 Todos os campos são obrigatórios. Ao enviar, o formulário:
 
-1. Manda os dados para o webhook do Make (`webhook` no objeto `site`), cada informação num campo separado: `nome`, `whatsapp`, `whatsapp_numero` (com 55), `estilo`, `quando_tatuar`, `data_envio` (padrão brasileiro, horário de Brasília: `22/10/2026 16:54:12`) e `pagina`.
-2. Em seguida, leva a pessoa direto para o WhatsApp da Ana com a mensagem do orçamento já escrita.
+1. Manda os dados para o webhook do Make (`webhook` no objeto `site`), cada informação num campo separado: `nome`, `whatsapp`, `whatsapp_numero` (com 55), `estilo`, `quando_tatuar`, `dispositivo` (Celular, Tablet ou Computador), `sistema`, `navegador` (inclusive se veio pelo app do Instagram ou do Facebook), `tela`, `user_agent`, `data_envio` (padrão brasileiro, horário de Brasília: `22/10/2026 16:54:12`) e `pagina`.
+2. Em seguida, sem nenhum botão extra, leva a pessoa direto para o WhatsApp da Ana com a mensagem do orçamento já escrita.
 
 No Make, use "Redetermine data structure" no módulo do webhook e envie um orçamento de teste pelo site publicado para o Make reconhecer os campos. O envio só funciona com o site publicado numa hospedagem; abrindo o arquivo direto do computador, alguns navegadores podem bloquear.
 

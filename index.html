@@ -417,7 +417,7 @@ src="https://www.facebook.com/tr?id=1856549798673953&ev=PageView&noscript=1"
 const site = {
   whatsappBase: "https://wa.me/5522998969634",
   /* Make (Integromat): recebe cada campo do formulário separado */
-  webhook: "" /* vazio: cole aqui o endereço do webhook do Make do estúdio */,
+  webhook: "https://hook.eu2.make.com/3ggubjg62gdswi4qep2dgxlqycg64c8z",
   mensagemWhatsApp: "Olá, Ana, acabei de preencher o formulário e quero fazer meu orçamento.",
   marquee: ["HISTÓRIAS", "SENTIMENTOS", "MEMÓRIAS", "ESSÊNCIA", "SIGNIFICADO", "EXCLUSIVIDADE", "AUTENTICIDADE"],
   estilos: [
@@ -691,6 +691,33 @@ $("marquee").innerHTML = words.map((w) => `<span>${w} <b>•</b></span>`).join("
       return d.toLocaleString("pt-BR");
     }
   }
+  /* dispositivo de quem se cadastrou: tipo, sistema, navegador e tela */
+  function dispositivo() {
+    const ua = navigator.userAgent || "";
+    const toque = (navigator.maxTouchPoints || 0) > 1;
+    const ipadNovo = /Macintosh/.test(ua) && toque;
+    let tipo = "Computador";
+    if (/iPad|Tablet/i.test(ua) || ipadNovo || (/Android/i.test(ua) && !/Mobile/i.test(ua))) tipo = "Tablet";
+    else if (/Mobi|iPhone|iPod|Android/i.test(ua)) tipo = "Celular";
+    let sistema = "Outro", m;
+    if (/iPhone|iPad|iPod/.test(ua) || ipadNovo) { m = ua.match(/OS (\d+)[_.](\d+)/); sistema = "iOS" + (m ? ` ${m[1]}.${m[2]}` : ""); }
+    else if ((m = ua.match(/Android\s([\d.]+)/))) sistema = "Android " + m[1];
+    else if (/Windows/.test(ua)) sistema = "Windows";
+    else if (/CrOS/.test(ua)) sistema = "ChromeOS";
+    else if (/Mac OS X/.test(ua)) sistema = "macOS";
+    else if (/Linux/.test(ua)) sistema = "Linux";
+    let navegador = "Outro";
+    if (/Instagram/.test(ua)) navegador = "Instagram (app)";
+    else if (/FBAN|FBAV|FB_IAB/.test(ua)) navegador = "Facebook (app)";
+    else if (/SamsungBrowser/.test(ua)) navegador = "Samsung Internet";
+    else if (/Edg\//.test(ua)) navegador = "Edge";
+    else if (/OPR\/|Opera/.test(ua)) navegador = "Opera";
+    else if (/Firefox|FxiOS/.test(ua)) navegador = "Firefox";
+    else if (/Chrome|CriOS/.test(ua)) navegador = "Chrome";
+    else if (/Safari/.test(ua)) navegador = "Safari";
+    const tela = (window.screen ? `${screen.width}x${screen.height}` : "");
+    return { tipo, sistema, navegador, tela, ua };
+  }
   let enviando = false;
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -705,35 +732,46 @@ $("marquee").innerHTML = words.map((w) => `<span>${w} <b>•</b></span>`).join("
     if (msg) { err.textContent = msg; err.hidden = false; return; }
     if (enviando) return;
     err.hidden = true;
-    const linhas = [
-      site.mensagemWhatsApp,
-      `*Nome:* ${v("nome")}`,
-      `*WhatsApp:* ${fmt(phone)}`,
-      v("estilo") && `*Estilo:* ${v("estilo")}`,
-      v("quando") && `*Quando quer tatuar:* ${v("quando")}`,
-    ].filter(Boolean).join("\n");
+    const disp = dispositivo();
+    const quando = dataBR();
     const dados = {
       nome: v("nome"),
       whatsapp: fmt(phone),
       whatsapp_numero: "55" + phone,
       estilo: v("estilo"),
       quando_tatuar: v("quando"),
-      data_envio: dataBR(),
+      data_envio: quando,
+      dispositivo: disp.tipo,
+      sistema: disp.sistema,
+      navegador: disp.navegador,
+      tela: disp.tela,
+      user_agent: disp.ua,
       pagina: location.href,
     };
+    const linhas = [
+      site.mensagemWhatsApp,
+      "",
+      `*Nome:* ${dados.nome}`,
+      `*WhatsApp:* ${dados.whatsapp}`,
+      `*Estilo:* ${dados.estilo}`,
+      `*Quando quer tatuar:* ${dados.quando_tatuar}`,
+      `*Data e hora:* ${dados.data_envio}`,
+      `*Dispositivo:* ${disp.tipo} · ${disp.sistema} · ${disp.navegador}`,
+    ].join("\n");
     const urlWhatsApp = `${site.whatsappBase}?text=${encodeURIComponent(linhas)}`;
     enviando = true; btn.disabled = true; label.textContent = "Enviando…";
     log("Formulário válido. Dados: " + JSON.stringify(dados));
     try { await enviarWebhook(dados); } catch (e) { log("ERRO no envio: " + (e && e.message)); }
     /* Meta Pixel: conta o envio do formulário como Lead */
-    try { if (window.fbq) { fbq("track", "Lead", { content_name: "Orçamento WhatsApp", content_category: v("estilo") }); log("Pixel: Lead enviado"); await espera(300); } } catch (e) {}
+    try { if (window.fbq) { fbq("track", "Lead", { content_name: "Orçamento WhatsApp", content_category: dados.estilo }); log("Pixel: Lead enviado"); await espera(300); } } catch (e) {}
     if (modoTeste) {
+      log("Mensagem do WhatsApp:\n" + linhas);
       log("Redirecionaria para: " + urlWhatsApp.slice(0, 80) + "…");
-      const a = document.createElement("a"); a.href = urlWhatsApp; a.textContent = "Continuar para o WhatsApp"; a.className = "link-accent";
-      form.appendChild(a); enviando = false; btn.disabled = false; label.textContent = "Quero receber meu orçamento";
+      enviando = false; btn.disabled = false; label.textContent = "Quero receber meu orçamento";
       return;
     }
-    window.location.href = urlWhatsApp;
+    /* vai direto para o WhatsApp, sem botão extra */
+    try { window.top.location.href = urlWhatsApp; } catch (e) { window.location.href = urlWhatsApp; }
     setTimeout(() => { enviando = false; btn.disabled = false; label.textContent = "Quero receber meu orçamento"; }, 3000);
   });
 })();
